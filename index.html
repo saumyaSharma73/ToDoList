@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List</title>
+</head>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-image: url(https://www.sheknows.com/wp-content/uploads/2018/08/dgldbejjyofmcsfvkfd9.jpeg?w=1920);
+}
+input {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 600px;
+}
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px solid black;
+  width: 400px;
+}
+li {
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 20px;
+  padding: 10px;
+  margin: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+button.delete {
+  background-color: #f44336;
+  color: white;
+}
+button.edit {
+  background-color: #2196F3;
+  color: white;
+}
+</style>
+<body>
+    <h1><i>TO DO LIST</i></h1>
+  <input type="text" id="taskInput" placeholder="Add a task">
+  <button id="addButton">Add</button>
+  <ul id="taskList"></ul>
+  <script>
+    const input = document.getElementById('taskInput');
+    const addButton = document.getElementById('addButton');
+    const taskList = document.getElementById('taskList');
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      const tasks = JSON.parse(storedTasks);
+      tasks.forEach((task) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = task.text; 
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete');
+        deleteButton.addEventListener('click', () => {
+          taskList.removeChild(listItem);
+          updateStorage();
+        });
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit');
+        editButton.addEventListener('click', () => {
+          const editText = prompt('Edit task:', listItem.textContent);
+          if (editText!== null) {
+            listItem.textContent = editText;
+            updateStorage();
+          }
+        });
+        listItem.appendChild(deleteButton);
+        listItem.appendChild(editButton);
+        taskList.appendChild(listItem);
+      });
+    }
+    addButton.addEventListener('click', () => {
+      const taskText = input.value.trim();
+      if (taskText!== '') {
+        const task = { text: taskText };
+        const listItem = document.createElement('li');
+        listItem.textContent = taskText; 
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete');
+        deleteButton.addEventListener('click', () => {
+          taskList.removeChild(listItem);
+          updateStorage();
+        });
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit');
+        editButton.addEventListener('click', () => {
+          const editText = prompt('Edit task:', listItem.textContent);
+          if (editText!== null) {
+            listItem.textContent = editText;
+            updateStorage();
+          }});
+        listItem.appendChild(deleteButton);
+        listItem.appendChild(editButton);
+        taskList.appendChild(listItem);
+        input.value = '';
+        updateStorage();
+      }});
+    function updateStorage() {
+      const tasks = [];
+      taskList.childNodes.forEach((li) => {
+        tasks.push({ text: li.firstChild.textContent }); 
+      });
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+  </script>
+</body>
+</html>
